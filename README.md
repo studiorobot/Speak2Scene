@@ -12,6 +12,8 @@ Below, there is an outline on how to make use of Speak2Scene without making furt
 - [Node](#node)
 - [OpenAI API](#openai-api)
 - [Firebase](#firebase)
+- [Google Cloud SDK](https://docs.cloud.google.com/sdk/docs/install-sdk)
+- [Python](https://www.python.org/downloads/)
   
 #### Node
 Ensure that you have Node installed. Follow the steps outlined: https://nodejs.org/en/download.
@@ -35,7 +37,11 @@ You will need an OpenAI API key which you can acquire through the OpenAI dashboa
 3. Install all the relevant packages: `npm install`
 > If you get an error `npm: command not found`, then navigate to a new terminal window and follow the steps to install [Node](#node). Then make sure to restart the terminal and start from Step 2 of the Installation procedure.
 4. Create a `.env` file within the `Speak2Scene` folder. Refer to [OpenAI API](#openai-api) and [Firebase](#firebase) sections to get the API keys and other details and add them into the `.env` file by following the format outlined [here](#env-file).
-5. Perform: `npm run dev`. This should start a server and the app on your computer with a localhost url. Open the localhost url in your web browser (tested with Google Chrome browser). It should open the app with a `[researcher]` screen. You can enter a name and it will take you to the landing page.
+5. You will need to have [Google Cloud SDK](https://docs.cloud.google.com/sdk/docs/install-sdk) installed. Follow the steps outlined in the link. Perform `gcloud --version` in the terminal and it should not produce any errors if it is successfully installed. Perform the following after: 
+  - `gcloud init`
+  - `gsutil cors set cors.json gs://<firebase-storage-name>`. You can find the `<firebase-storage-name>` on your Firebase console under "Storage". It should be `<something>.firebasestorage.app`.
+  - Run `gsutil cors get gs://<firebase-storage-name>` to check if the previous step was successful.
+6. Perform: `npm run dev`. This should start a server and the app on your computer with a localhost url. Open the localhost url in your web browser (tested with Google Chrome browser). It should open the app with a `[researcher]` screen. You can enter a name and it will take you to the landing page.
 > If the application starts correctly, you should notice something that looks like the following in the terminal (Note: It's okay if not each line is exactly the same!):
 > ```
 > > userstudy-app@0.0.0 dev
