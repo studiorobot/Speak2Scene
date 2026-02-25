@@ -27,12 +27,71 @@ import {
 // Constants
 import { STATUS, HOT_WORDS } from './constants'
 
+import generatePDF, { Resolution, Margin } from 'react-to-pdf';
+
 export function AllStoryBoards({ storyboards }) {
 	const [status, setStatus] = useState(STATUS.WAITING)
 	const [currentStoryboard, setCurrentStoryboard] = useState(null)
 	const [selectedImages, setSelectedImages] = useState({})
 	const participant = useParams().participant
 	const [showInfo, setShowInfo] = useState(false)
+
+	const options = {
+		// default is `save`
+		method: 'open',
+		// default is Resolution.MEDIUM = 3, which should be enough, higher values
+		// increases the image quality but also the size of the PDF, so be careful
+		// using values higher than 10 when having multiple pages generated, it
+		// might cause the page to crash or hang.
+		resolution: Resolution.HIGH,
+		page: {
+			margin: Margin.SMALL,
+			// default is 'A4'
+			format: 'letter',
+			// default is 'portrait'
+			orientation: 'landscape',
+		},
+		canvas: {
+			// default is 'image/jpeg' for better size performance
+			mimeType: 'image/png',
+			qualityRatio: 10
+		},
+		// Customize any value passed to the jsPDF instance and html2canvas
+		// function. You probably will not need this and things can break, 
+		// so use with caution.
+		overrides: {
+			// see https://artskydj.github.io/jsPDF/docs/jsPDF.html for more options
+			pdf: {
+				compress: false
+			},
+			// see https://html2canvas.hertzen.com/configuration for more options
+			canvas: {
+				useCORS: true,
+				allowTaint: true,
+				// scale: 2,
+			}
+		},
+	};
+
+	const getTargetElement = (sbid) => document.getElementById(sbid);
+
+	const waitForImages = async (element) => {
+		const images = Array.from(element.getElementsByTagName("img"));
+
+		await Promise.all(
+			images.map(
+				(img) =>
+					new Promise((resolve) => {
+						if (img.complete) resolve();
+						else {
+							img.onload = resolve;
+							img.onerror = resolve;
+						}
+					})
+			)
+		);
+	};
+
 
 	const { transcript, resetTranscript, browserSupportsSpeechRecognition } = useSpeechRecognition()
 
@@ -340,6 +399,7 @@ export function AllStoryBoards({ storyboards }) {
 									{storyboards.map((sb) => (
 										<div
 											key={sb.id}
+											id={sb.id}
 											// className="scene-card"
 											style={{
 												padding: '10px',
@@ -359,13 +419,14 @@ export function AllStoryBoards({ storyboards }) {
 													display: 'grid',
 													gridTemplateColumns: 'repeat(3, 1fr)',
 													gap: '10px',
+													width: '100%',
 												}}
 											>
 												{storyboards[sb.id - 1].scenes.map(
 													(scene, index) =>
 														selectedImages[sb.id - 1] &&
-														selectedImages[sb.id - 1][scene.id] &&
-														selectedImages[sb.id - 1][scene.id][0] ? (
+															selectedImages[sb.id - 1][scene.id] &&
+															selectedImages[sb.id - 1][scene.id][0] ? (
 															<img
 																key={index}
 																src={
@@ -404,6 +465,19 @@ export function AllStoryBoards({ storyboards }) {
 												}
 											>
 												Go
+											</button>
+											<button
+												className="scene-button1"
+												style={{
+													marginLeft: "10px"
+												}}
+												onClick={async () => {
+													const element = getTargetElement(sb.id);
+													await waitForImages(element);
+													generatePDF(() => element, options);
+												}}
+											>
+												[Researcher] Print
 											</button>
 										</div>
 									))}

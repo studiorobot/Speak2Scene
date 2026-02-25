@@ -170,7 +170,7 @@ Speak2Scene/
 │   ├── constants.jsx                       # Constants (storyboard, keywords, endpoints for OpenAI)
 │   └── main.jsx
 │
-├── ...                                     # ReactJS requirements, firebase, gitignore, etc.
+├── ...                                     # ReactJS requirements, firebase, gitignore, cors, etc.
 │
 ├── README.md                               # This file
 │
