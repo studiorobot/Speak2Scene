@@ -187,6 +187,18 @@ Speak2Scene/
 ```
 
 ## Citation
+Paper: https://doi.org/10.1016/j.softx.2026.102628
+```
+@article{kashyap2026speak2scene,
+  title={Speak2Scene: Voice-based Storyboarding},
+  author={Kashyap, Atharva S and Alves-Oliveira, Patr{\'\i}cia},
+  journal={SoftwareX},
+  volume={34},
+  pages={102628},
+  year={2026},
+  publisher={Elsevier}
+}
+```
 
 ## License
 [MIT License](https://opensource.org/license/MIT)
